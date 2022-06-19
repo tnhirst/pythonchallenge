@@ -1,0 +1,14 @@
+# Module requirements
+psycopg2-binary==2.9.2
+sklearn
+geopandas==0.8.0
+pebble==4.6.3
+tqdm==4.49.0
+sqlalchemy==1.3.19
+geoalchemy2==0.8.4
+osmium==3.2.0
+pygeos==0.8
+
+# For testing
+nose==1.3.7
+ddt==1.4.1

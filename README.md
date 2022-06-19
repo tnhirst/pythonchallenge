@@ -14,8 +14,14 @@ However, in its current state, the 'Industrial Buildings' class does not do what
 
 The challenge is to update this 'Industrial Buildings' class so that it does not double count buildings.
 
+# Running the code
+The code is written for python 3.6+. To install all of the required dependencies for running the unit tests, you can run `pip install -r requirements.txt`
+
 # Note
 Whilst there are some concepts about OSM data that might be new to you, you won't need any of the geospatial concepts to do this challenge. What you do need to know is:
 - that the osmium package allows you to iterate over all of the data in an OSM data file using the 'apply_file' function on a handler... that handler will then get it's 'node' function called for each node in the data file, then get its 'way' function called with each way in the file, then get its 'relation' function called with each relation in the file
 - that both buildings and landuse areas are 'ways'
 - that the way object also has its unique id as an attribute... you can use this id to spot duplicates
+
+# Further Note
+The tests will raise some warnings, particularly about geographic projections. This is ok for now - some of the tests are set up to perform nonsense area calculations.
