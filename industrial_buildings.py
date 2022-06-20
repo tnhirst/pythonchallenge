@@ -14,16 +14,38 @@ class IndustrialBuildings:
     def __init__(self, filename, bounds=None, crs=None):
         self.filename = filename
         self.bounds = bounds
+
+        # Collect IBs with building tags
         industrial_buildings_handler = IndustrialBuildingHandler()
         industrial_buildings_handler.apply_file(filename, locations=True)
         self.industrial_buildings = industrial_buildings_handler.results
+        
+        # Collect IBs with landuse tags
         industrial_landuse_handler = IndustrialLanduseHandler(self.industrial_buildings)
         industrial_landuse_handler.apply_file(filename, locations=True)
         industrial_landuse_zones = industrial_landuse_handler.results
+        
+        # Only keep zoned IBs
         buildings_in_industrial_zones_handler = BuildingsInZonesHandler(industrial_landuse_zones)
         buildings_in_industrial_zones_handler.apply_file(filename, locations=True)
         self.industrial_buildings.extend(buildings_in_industrial_zones_handler.results)
         self.transform = None
+
+        # Only keep uniques [Fred]
+        self.industrial_buildings = set([tuple(x.exterior.coords) for x in self.industrial_buildings])
+        self.industrial_buildings = [Polygon(x) for x in self.industrial_buildings]
+
+        """
+        Further Recommendations [Fred]
+        * I'd use a value object instead of a Polygon (entity) in the handlers. I don't see why they need an ID
+          that early. That would make deduping as simple as: list(set(self.indsutrial_buildings))
+        * I'd investigate if the above can be rewriten with a single joint handler
+          to avoid the exponential logic. Avoiding having to loop over lists repeatedly
+          will result in higher performance.
+        * Some additional refactoring - extracting methods – would also help to improve readability and
+          maintanance.
+        """
+        
         if crs:
             crs4326 = pyproj.CRS("EPSG:4326")
             crs3035 = pyproj.CRS("EPSG:3035")
